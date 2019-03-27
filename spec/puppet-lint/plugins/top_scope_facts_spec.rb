@@ -9,7 +9,8 @@ describe 'top_scope_facts' do
       it 'should not detect any problems' do
         expect(problems).to have(0).problem
       end
-    end    
+    end
+
     context 'non-fact variable with two colons' do
       let(:code) { "$foo::bar" }
 
@@ -58,6 +59,18 @@ describe 'top_scope_facts' do
       end
     end
 
+    context 'reference to class or module parameter' do
+      let(:code) { """
+        class myprofile {
+          $scoped = 'foobar'
+          $var = $::myprofile::scoped
+        }
+      """ }
+      it do
+        expect(problems).to have(0).problem
+      end
+    end
+
   end
 
   context 'with fix enabled' do
@@ -75,7 +88,7 @@ describe 'top_scope_facts' do
       it 'should not detect any problems' do
         expect(problems).to have(0).problem
       end
-    end    
+    end
     context 'non-fact variable with two colons' do
       let(:code) { "$foo::bar" }
 
